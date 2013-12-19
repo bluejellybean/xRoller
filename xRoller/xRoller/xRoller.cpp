@@ -2,14 +2,15 @@
 #include <iostream>
 #include <Windows.h>
 #include "XBOXController.h"
+#include "inputActions.h"
 #include <XInput.h>
 
 XBOXController* Player1;
-void mouseClick(unsigned downClick, unsigned upClick);
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	Player1 = new XBOXController(1);
-
+	inputActions inputActions;
 
 	 while(true)
     {
@@ -18,14 +19,14 @@ int _tmain(int argc, _TCHAR* argv[])
             if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_A)
             {
 				std::cout<<"Left Click"<<std::endl;
-                mouseClick(0x0002,0x0004);//left down and up
+                inputActions.mouseClick(0x0002,0x0004);//left down and up
 				Sleep(200);
             }
 
             if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_B)
             {
 				std::cout<<"Right Click"<<std::endl;
-                mouseClick(0x0008, 0x0010);
+                inputActions.mouseClick(0x0008, 0x0010);
 				Sleep(200);
             }
 			if(Player1->GetState().Gamepad.bLeftTrigger > 0 )
@@ -35,14 +36,16 @@ int _tmain(int argc, _TCHAR* argv[])
                 Player1->Vibrate(65535, 65535);
             }
 
-            if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_Y)
+            if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
             {
-                Player1->Vibrate();
+                mouse_event(MOUSEEVENTF_WHEEL, 0, 0, 120, 0);
+				Sleep(200);
             }
 
-            if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_BACK)
+			if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
             {
-                break;
+                mouse_event(MOUSEEVENTF_WHEEL, 0, 0, -120, 0);
+				Sleep(200);
             }
         }
         else
@@ -57,21 +60,4 @@ int _tmain(int argc, _TCHAR* argv[])
 	     delete(Player1);
 
 	return 0;
-}
-
-void mouseClick(unsigned downClick, unsigned upClick){  
-	 //leftdown/up  == 0x0002, 0x0004
-	 //rightdown/up == 0x0008, 0x0010
-
-	INPUT    Input={0};
-	// left down 
-	Input.type      = INPUT_MOUSE;
-	Input.mi.dwFlags  = downClick;// MOUSEEVENTF_LEFTDOWN
-	::SendInput(1,&Input,sizeof(INPUT));
-
-	// left up
-	::ZeroMemory(&Input,sizeof(INPUT));
-	Input.type      = INPUT_MOUSE;
-	Input.mi.dwFlags  = upClick;//MOUSEEVENTF_LEFTUP;
-	::SendInput(1,&Input,sizeof(INPUT));
 }

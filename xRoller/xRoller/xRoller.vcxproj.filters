@@ -27,6 +27,9 @@
     <ClInclude Include="XBOXController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inputActions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -36,6 +39,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XBOXController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inputActions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
