@@ -6,7 +6,7 @@
 #include <XInput.h>
 
 XBOXController* Player1;
-float currentVolume = 0;
+double currentVolume = 0;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -38,6 +38,21 @@ int _tmain(int argc, _TCHAR* argv[])
 				inputActions.simulateKeys(0xA6);//browser back
 				Sleep(400);
             }
+			
+			if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_START)
+			{
+				double newVolume = currentVolume + 5;
+				inputActions.changeVolume(newVolume, true);
+				currentVolume = inputActions.getCurrentVolume(0, true);
+			}
+
+			if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_BACK)
+			{
+				double newVolume = currentVolume - 5;
+				inputActions.changeVolume(newVolume, true);
+				currentVolume = inputActions.getCurrentVolume(0, true);
+			}
+
 
 			if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
             {
@@ -53,7 +68,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			if(Player1->GetState().Gamepad.bRightTrigger > 0 )
 			{
 				
-				currentVolume = inputActions.getCurrentMasterVolume(0, true); //TODO: look into getting rid of 0 and true, may not need
+				currentVolume = inputActions.getCurrentVolume(0, true); //TODO: look into getting rid of 0 and true, may not need
 
 				while (Player1->GetState().Gamepad.bRightTrigger > 0 )
 				{

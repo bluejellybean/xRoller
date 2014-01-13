@@ -8,7 +8,7 @@ public:
 	void leftClick();
 	void rightClick();
 	void simulateKeys(int);
-	float getCurrentMasterVolume(double,bool);
+	float getCurrentVolume(double,bool);
 	bool changeVolume(double, bool);
 	~inputActions(void);
 };

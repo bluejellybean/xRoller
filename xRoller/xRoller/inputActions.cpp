@@ -58,7 +58,7 @@ void inputActions::simulateKeys(int keyType){
 
 
 
-float inputActions::getCurrentMasterVolume(double nVolume,bool bScalar)
+float inputActions::getCurrentVolume(double nVolume,bool bScalar)
 {
  
     HRESULT hr=NULL;
