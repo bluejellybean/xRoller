@@ -4,70 +4,68 @@
 #include "XBOXController.h"
 #include "inputActions.h"
 #include <XInput.h>
-#include <math.h>
 
 XBOXController* Player1;
+float currentVolume = 0;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	Player1 = new XBOXController(1);
 	inputActions inputActions;
-				int x = 100;
-				int y = 100;
+
 	 while(true)
     {
         if(Player1->IsConnected())
         {
             if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_A)
-            {
-				std::cout<<"Left Click"<<std::endl;
-                inputActions.mouseClick(0x0002,0x0004);//left down and up
-				Sleep(200);
+            {				
+                inputActions.leftClick();
+				
             }
 
             if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_B)
             {
-				std::cout<<"Right Click"<<std::endl;
-                inputActions.mouseClick(0x0008, 0x0010);
-				Sleep(200);
+                inputActions.rightClick();
+				Sleep(400);
             }
-			if(Player1->GetState().Gamepad.bLeftTrigger > 0 )
 
-          // if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_X)
+			if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_Y){
+				
+			}
 
-
+			if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB)
             {
-
-				float normLX = max(-1, (float) Player1->GetState().Gamepad.sThumbLX / 32767);
-				float normLY = max(-1, (float) Player1->GetState().Gamepad.sThumbLY / 32767);
-				std::cout<<normLX<<" "<<normLY<<std::endl;
-
-				float deadzoneX = 0.09f;
-				float deadzoneY = 0.15f;
- 
-				float leftStickX = (abs(normLX) < deadzoneX ? 0 : normLX);
-				float leftStickY = (abs(normLY) < deadzoneY ? 0 : normLY);
-
-				std::cout<<leftStickX<<" "<<leftStickY<<std::endl;
-
-				//Sleep(100);
-
-				if(leftStickX > .3 ){
-					x+=1;
-				} else if (leftStickX < -.3){
-					x-=1;
-				}
-
-				if(leftStickY > .3) {
-					y-=1;
-				} else if (leftStickY < -.3){
-					y+=1;
-				}
-				
-				
-				std::cout<<x<<" "<<y<<std::endl;
-				SetCursorPos(x,y);
+				inputActions.simulateKeys(0xA6);//browser back
+				Sleep(400);
             }
+
+			if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
+            {
+				inputActions.simulateKeys(0xA7);//browser forward
+				Sleep(400);
+            }
+
+			if(Player1->GetState().Gamepad.bLeftTrigger > 0 )
+			{
+				//inputActions.simulateKeys(0x20);
+			}
+
+			if(Player1->GetState().Gamepad.bRightTrigger > 0 )
+			{
+				
+				currentVolume = inputActions.getCurrentMasterVolume(0, true); //TODO: look into getting rid of 0 and true, may not need
+
+				while (Player1->GetState().Gamepad.bRightTrigger > 0 )
+				{
+					double triggerValue = ((Player1->GetState().Gamepad.bRightTrigger * 1000) / 255) / 10 * .01;
+					double newVolume = currentVolume - triggerValue;
+					inputActions.changeVolume(newVolume, true);
+				}
+
+				inputActions.changeVolume(currentVolume, true);
+			}
+
+
 
             if(Player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
             {
